@@ -1,271 +1,276 @@
-/*ÁLGEBRA LINEAR/GEOMETRIA ANALÍTICA*/
+  /*Código Scilab*/  
+    
+    /*ÁLGEBRA LINEAR/GEOMETRIA ANALÍTICA*/
 
-/*reflexãoR2*/
-/*ALGORITMO QUE RECEBE COMO ENTRADAS UM VETOR BIDIMENSIONAL E A IN-
-CLINAÇÃO DE UMA RETA QUE PASSA PELA ORIGEM NO PLANO XY, E RETORNA A 
-REFLEXÃO DO VETOR DE ENTRADA EM TORNO DESSA RETA.*/
 
-/*Entradas: vetor x, bidimensional e de números reais, e variável 
-float a, que representa a inclinação da reta que passa pela origem*/
-/*Saída: vetor y, bidimensional e de números reais, que é a reflexão 
-de x em torno da reta de inclinação a*/
+        function y = reflexãoR2(x,a)
+        
+        /*reflexão do vetor bidimensional x em torno da reta de inclinação a que passa pela origem*/
 
-INÍCIO
-    y <- matrizNula(2,1)
-    y(1) <- x(1)*(1-a^2)/(1+a^2) + x(2)*2*a/(1+a^2)
-    y(2) <- x(1)*2*a/(1+a^2) - x(2)*(1-a^2)/(1+a^2)
+            try typeof(x(2)) == "constant"
+                if typeof(x(1))~="constant" || typeof(x(2))~="constant" || typeof(a)~="constant" then
+                    y = zeros(3,1)
+                    y = return(y)
+                else
+                    try typeof(x(3)) == "constant" && typeof(a(2)) == "constant"
+                        y = zeros(3,1)
+                        y = return(y)
+                    catch "Invalid index"
+                        y = zeros(2,1)
 
-    Se abs(y(1)) < 10^(-6) Então      //correção de erros por arredondamento
-        y(1) <- 0
-    Se abs(y(2)) < 10^(-6) Então      //correção de erros por arredondamento
-        y(2) <- 0
-FIM
+                        y(1) = x(1)*(1-a^2)/(1+a^2) + x(2)*2*a/(1+a^2)
+                        y(2) = x(1)*2*a/(1+a^2) - x(2)*(1-a^2)/(1+a^2)
 
-/*projeçãoR2*/
-/*ALGORITMO QUE RECEBE COMO ENTRADAS UM VETOR BIDIMENSIONAL E A IN-
-CLINAÇÃO DE UMA RETA QUE PASSA PELA ORIGEM NO PLANO XY, E RETORNA A 
-PROJEÇÃO DO VETOR DE ENTRADA EM TORNO DESSA RETA.*/
+                        if abs(y(1)) < 10^(-6) then
+                            y(1) = 0
+                        end
+                        if abs(y(2)) < 10^(-6) then
+                            y(2) = 0
+                        end
+                        y = return(y)
+                    end
+                end
+            catch "Invalid index"
+                y = zeros(3,1)
+                y = return(y)
+            end
 
-/*Entradas: vetor x, bidimensional e de números reais, e variável 
-float a, que representa a inclinação da reta que passa pela origem*/
-/*Saída: vetor y, bidimensional e de números reais, que é a projeção 
-de x em torno da reta de inclinação a*/
+        endfunction
 
-INÍCIO
-    y <- matrizNula(2,1)
-    y(1) <- x(1)/(1+a^2) + x(2)*a/(1+a^2)
-    y(2) <- x(1)*a/(1+a^2) + x(2)*a^2/(1+a^2)
 
-    Se abs(y(1)) < 10^(-6) Então      //correção
-        y(1) <- 0
-    Se abs(y(2)) < 10^(-6) Então      //correção
-        y(2) <- 0
-FIM
+        function y = projeçãoR2(x,a)
+        
+        /*projeção do vetor bidimensional x na reta de inclinação a que passa pela origem. Retorna um vetor
+        bidimensional (projeção de x) ou um vetor nulo 3x1 em caso de erro.*/
 
-/*projeçãoR2*/
-/*ALGORITMO QUE RECEBE COMO ENTRADAS UM VETOR BIDIMENSIONAL E UM ÂN-
-GULO EM RADIANOS, E A ROTAÇÃO DO VETOR DE ENTRADA POR ESSE ÂNGULO.*/
+            try typeof(x(2)) == "constant"
+                if typeof(x(1))~="constant" || typeof(x(2))~="constant" || typeof(a)~="constant" then
+                    y = zeros(3,1)
+                    y = return(y)
+                else
+                    try typeof(x(3)) == "constant" || typeof(a(2)) == "constant"
+                        y = zeros(3,1)
+                        y = return(y)
+                    catch "Invalid index"
+                        y = zeros(2,1)
 
-/*Entradas: vetor x, bidimensional e de números reais, e variável 
-float t, que representa o ângulo de rotação em radianos*/
-/*Saída: vetor y, bidimensional e de números reais, que é a rotação 
-de x em torno do ângulo t*/
+                        y(1) = x(1)/(1+a^2) + x(2)*a/(1+a^2)
+                        y(2) = x(1)*a/(1+a^2) + x(2)*a^2/(1+a^2)
 
-INÍCIO
-    y <- matrizNula(2,1)
-    y(1) <- x(1)*cos(t) - x(2)*sin(t)
-    y(2) <- x(1)*sin(t) + x(2)*cos(t)
+                        if abs(y(1)) < 10^(-6) then
+                            y(1) = 0
+                        end
+                        if abs(y(2)) < 10^(-6) then
+                            y(2) = 0
+                        end
+                        y = return(y)
+                    end
+                end
+            catch "Invalid index"
+                y = zeros(3,1)
+                y = return(y)
+            end
 
-    Se abs(y(1)) < 10^(-6) Então      //correção
-        y(1) <- 0
-    Se abs(y(2)) < 10^(-6) Então      //correção
-        y(2) <- 0
-FIM
+        endfunction
 
-/*gram_schmidt*/
-/*ALGORITMO QUE RECEBE UMA MATRIZ QUE POSSUI COMO LINHAS OS VETORES 
-DE UMA BASE DE RN, N NATURAL, E RETORNA OUTRA MATRIZ QUE POSSUI COMO 
-LINHAS OS VETORES DE UMA BASE ORTONORMAL DE RN.*/
 
-/*Entrada: uma matriz de constantes x, com linhas linearmente inde-
-pendentes*/
-//Saída: uma matriz de constantes y, com linhas ortonormais
-/*Variáveis auxiliares: variáveis inteiras m, que recebe o número de
-linhas da matriz de entrada, e n, que recebe o número de colunas da
-matriz de entrada*/
+        function y = rotaçãoR2(x,t)
+        
+        /*rotação do vetor bidimensional x por um ângulo t em torno da origem.*/
 
-INÍCIO
-    m <- numeroDeLinhas(x)
-    n <- numeroDeColunas(x)
+            try typeof(x(2)) == "constant"
+                if typeof(x(1))~="constant" || typeof(x(2))~="constant" || typeof(t)~="constant" then
+                    y = zeros(3,1)
+                    y = return(y)
+                else
+                    try typeof(x(3)) == "constant" || typeof(t(2)) == "constant"
+                        y = zeros(3,1)
+                        y = return(y)
+                    catch "Invalid index"
+                        y = zeros(2,1)
 
-    Se typeof(x(1)) ~= CONSTANT Então
-    INÍCIO
-        y <- matrizNula(m,n)
-    Senão
-        y <- x
+                        y(1) = x(1)*cos(t) - x(2)*sin(t)
+                        y(2) = x(1)*sin(t) + x(2)*cos(t)
 
-        De i <- 2 Até m Faça              //cria os vetores dois a dois ortogonais
-        INÍCIO
-            y(i,:) <- x(i,:)
-            De j <- 1 Até i-1 Faça
-                y(i,:) <- y(i,:) - ((y(j,:)*x(i,:)')/(y(j,:)*y(j,:)'))*y(j,:)
-            De j <- 1 Até n Faça          //correção
-                Se abs(y(i,j)) < 10^(-6) Então
-                    y(i,j) <- 0
-        FIM
+                        if abs(y(1)) < 10^(-6) then
+                            y(1) = 0
+                        end
+                        if abs(y(2)) < 10^(-6) then
+                            y(2) = 0
+                        end
+                        y = return(y)
+                    end
+                end
+            catch "Invalid index"
+                y = zeros(3,1)
+                y = return(y)
+            end
 
-        De k <- m Até 1 Decremento 1 Faça         //faz a normalização
-            y(k,:) <- y(k,:)/((y(k,:)*y(k,:)')^(1/2))
-    FIM
+        endfunction
 
-    Retorna(y)
-FIM
 
-/*transforma_eixos*/
-/*ALGORITMO QUE RECEBE COMO ENTRADA UM PAR ORDENADO x, UM PAR ORDE-
-NADO y, UM ÂNGULO z EM RADIANOS (NÚMERO PURO) E DUAS STRINGS u E v. 
-A SAÍDA É UMA MENSAGEM DE TEXTO, QUE EXIBE OU A COORDENADA DO PONTO 
-x EM RELAÇÃO A UM SISTEMA DE EIXOS ORTOGONAL QUE FOI ROTACIONADO EM 
-TORNO DA ORIGEM PELO ÂNGULO z E TRANSLADADO ATÉ y, OU A COORDENADA 
-DO PONTO x EM RELAÇÃO AO SISTEMA DE EIXOS QUE NÃO SOFREU ROTAÇÃO NEM 
-TRANSLAÇÃO. A STRING u INDICA A ORIENTAÇÃO DO SISTEMA DE EIXOS 
-TRANSFORMADO (MESMA ORIENTAÇÃO QUE O SISTEMA DE EIXOS INICIAL OU NÃO) 
-E A STRING v INDICA SE A COORDENADA DE x EXIBIDA NA TELA SERÁ EM RE-
-LAÇÃO AO SISTEMA DE EIXOS INICIAL (NÃO TRANSFORMADO, v = "invertido") 
-OU AO SISTEMA DE EIXOS FINAL (v = "não_invertido").*/
+        function y = gram_schmidt(x)
+        
+        /*recebe uma matriz que possui como linhas os vetores de uma base de Rn, n natural, e retorna
+        outra matriz que possui como linhas os vetores de uma base ortonormal de Rn.*/
 
-/*Entradas: par ordenado x de números reais, par ordenado y de núme-
-ros reais, variável float z que representa o ângulo em radianos, 
-string u e string v*/
-/*Saída: uma mensagem exibindo as coordenadas do ponto x ou em rela-
-ção ao sistema de eixos não transformado (supondo que as coordenadas
-de x sejam dadas em relação ao sistema de eixos transformado), ou 
-em relação ao sistema de eixos transformado (supondo que as coorde-
-nadas de x sejam dadas em relação ao sistema de eixos não transfor-
-mado), ou uma mensagem de erro*/
-//Variáveis auxiliares: w (matriz nula 2x1)
+            m = size(x,1)
+            n = size(x,2)
 
-INÍCIO
-    Tente typeof(x(2)) = CONSTANT
-    INÍCIO
+            if typeof(x(1)) ~= "constant"  then
+                y = zeros(m,n)
+            else
+                y = x
 
-        Tente typeof(x(3)) = CONSTANT       //só pode ser um par ordenado
-        INÍCIO
+                for i = 2:m
+                    y(i,:) = x(i,:)
+                    for j = 1:i-1
+                        y(i,:) = y(i,:) - ((y(j,:)*x(i,:)')/(y(j,:)*y(j,:)'))*y(j,:)
+                    end
+                    for j = 1:n
+                        if abs(y(i,j)) < 10^(-6)  then
+                            y(i,j) = 0
+                        end
+                    end
+                end
 
-            Imprime("Insira um par ordenado como primeiro argumento.")
+                for k = m:-1:1
+                    y(k,:) = y(k,:)/((y(k,:)*y(k,:)')^(1/2))
+                end
+            end
 
-        Exceção InvalidIndex
+            y = return(y)
+            
+        endfunction
 
-            Se u = "mesma_orientação" Então         //o novo sistema de eixos mantém a mesma orientação do antigo (não transformado)
-            INÍCIO
+        
+        function transforma_eixos(x,y,z,u,v)
+        
+        /*função que recebe como entrada um par ordenado x, um par ordenado y, um ângulo z em radianos (número puro) e duas strings u e v. A saída é uma mensagem de texto, que exibe
+        a coordenada do ponto x em relação a um sistema de eixos ortogonal que foi rotacionado em torno da origem por um ângulo z e transladado até y ou em relação ao sistema de eixos
+        original. A string u indica a orientação do sistema de eixos final (mesma orientação que o sistema de eixos inicial ou não) e a string v indica se a coordenada de x exibida na
+        tela será em relação ao sistema de eixos inicial (v = "invertido") ou ao sistema de eixos final (v = "não_invertido")*/
 
-                Se v = "invertido" Então            //w(1) e w(2) são calculados em relação ao sistema de referências antigo
-                INÍCIO
+            try typeof(x(2)) == 'constant' 
+                try typeof(x(3)) == 'constant' 
+                    disp("Insira um par ordenado como primeiro argumento.")
+                catch "Invalid index"
+                    if u == "mesma_orientação" then
+                        if v == "invertido" then
+                            w = zeros(2,1)
+                            w(1) = x(1)*cos(z)-x(2)*sin(z)+y(1)
+                            w(2) = x(1)*sin(z)+x(2)*cos(z)+y(2)
+                            if abs(w(1)) < 10^(-6) then
+                                w(1) = 0
+                            end
+                            if abs(w(2)) < 10^(-6) then
+                                w(2) = 0
+                            end
+                            mprintf("Coordenada de x no sistema de eixos inicial: %i %i",w(1),w(2))
+                        elseif v == "não_invertido" then
+                            w = zeros(2,1)
+                            w(1) = (x(1)-y(1))*cos(z)+(x(2)-y(2))*sin(z)
+                            w(2) = -(x(1)-y(1))*sin(z)+(x(2)-y(2))*cos(z)
+                            if abs(w(1)) < 10^(-6) then
+                                w(1) = 0
+                            end
+                            if abs(w(2)) < 10^(-6) then
+                                w(2) = 0
+                            end
+                            mprintf("Coordenada de x no sistema de eixos final: %i %i",w(1),w(2))
+                        else
+                            disp("Quinto argumento incorreto.")
+                        end
+                    elseif u == "orientação_oposta" then
+                        if v == "invertido" then
+                            w = zeros(2,1)
+                            w(1) = x(1)*cos(z)+x(2)*sin(z)+y(1)
+                            w(2) = x(1)*sin(z)-x(2)*cos(z)+y(2)
+                            if abs(w(1)) < 10^(-6) then
+                                w(1) = 0
+                            end
+                            if abs(w(2)) < 10^(-6) then
+                                w(2) = 0
+                            end
+                            mprintf("Coordenada de x no sistema de eixos inicial: %i %i",w(1),w(2))
+                        elseif v == "não_invertido" then
+                            w = zeros(2,1)
+                            w(1) = (x(1)-y(1))*cos(z)+(x(2)-y(2))*sin(z)
+                            w(2) = (x(1)-y(1))*sin(z)-(x(2)-y(2))*cos(z)
+                            if abs(w(1)) < 10^(-6) then
+                                w(1) = 0
+                            end
+                            if abs(w(2)) < 10^(-6) then
+                                w(2) = 0
+                            end
+                            mprintf("Coordenada de x no sistema de eixos final: %i %i",w(1),w(2))
+                        else
+                            disp("Quinto argumento incorreto.")
+                        end
+                    else
+                        disp("Quarto argumento incorreto.")
+                    end
+                end
+            catch "Invalid index"
+                disp("Insira um par ordenado como primeiro argumento.")
+            end
+        endfunction
 
-                    w <- matrizNula(2,1)
-                    w(1) <- x(1)*cos(z)-x(2)*sin(z)+y(1)        //calcula w(1) e w(2)
-                    w(2) <- x(1)*sin(z)+x(2)*cos(z)+y(2)
-                    Se abs(w(1)) < 10^(-6) Então                //correção de erro por arredondamento
-                        w(1) <- 0
-                    Se abs(w(2)) < 10^(-6) Então                //correção de erro por arredondamento
-                        w(2) <- 0
-                    Imprime("Coordenada de x no sistema de eixos inicial: %i %i",w(1),w(2))
 
-                Senão Se v = "não_invertido" Então          //w(1) e w(2) são calculados em relação ao novo sistema de referências
+    /*GEOMETRIA ANALÍTICA*/
 
-                    w <- matrizNula(2,1)
-                    w(1) <- (x(1)-y(1))*cos(z)+(x(2)-y(2))*sin(z)       //calcula w(1) e w(2)
-                    w(2) <- -(x(1)-y(1))*sin(z)+(x(2)-y(2))*cos(z)
-                    Se abs(w(1)) < 10^(-6) Então                        //correção
-                        w(1) <- 0
-                    Se abs(w(2)) < 10^(-6) Então                        //correção
-                        w(2) <- 0
-                    Imprime("Coordenada de x no sistema de eixos final: %i %i",w(1),w(2))
+        
+        function w = distânciaPontos(x,y)
+        
+            /*Função que retorna a distância entre dois pontos no espaço.*/
+            try (typeof(x(2)) == "constant" || typeof(y(2)) == "constant") && (typeof(x(3)) == "constant" || typeof(y(3)) == "constant")
+                w = ((x(1)-y(1))^2 + (x(2)-y(2))^2 + (x(3)-y(3))^2)^(1/2)
+            catch "Invalid index"
+                w = return("Insira ternos ordenados de numeros reais apenas.")
+            end
+            
+        endfunction
+        
 
-                Senão                                       //o quinto argumento só pode ser "invertido" ou "não_invertido"
-                    Imprime("Quinto argumento incorreto.")
-                FIM
+        function distânciaPontoReta(x,y,z)
+        
+        /*Função que recebe um ponto (x) do espaço e duas matrizes de constantes que definem uma reta parametrizada, e retorna a distância entre o ponto e a reta.*/
+            try (typeof(x(2)) == "constant" || typeof(y(2)) == "constant" || typeof(z(2)) == "constant") && (typeof(x(3)) == "constant" || typeof(y(3)) == "constant" || typeof(z(3)) == "constant")
+                if abs(y(1)-x(1)) < 10^(-6) || abs(y(2)-x(2)) < 10^(-6) || abs(y(3)-x(3)) < 10^(-6) then
 
-            Senão Se u = "orientação_oposta" Então          //o novo sistema de eixos muda de orientação em relação 
-                                                            //ao antigo (como se o antigo fosse girado ao redor do eixo x e depois rotacionado e transladado)
+                    v = zeros(1,3)
 
-                Se v = "invertido" Então
-                INÍCIO
+                    if abs(y(1)-x(1)) < 10^(-6) then
+                        v(1) = 1
+                    elseif abs(y(2)-x(2)) < 10^(-6) then
+                        v(2) = 1
+                    else
+                        v(3) = 1
+                    end
 
-                    w <- matrizNula(2,1)
-                    w(1) <- x(1)*cos(z)+x(2)*sin(z)+y(1)
-                    w(2) <- x(1)*sin(z)-x(2)*cos(z)+y(2)
-                    Se abs(w(1)) < 10^(-6) Então
-                        w(1) <- 0
-                    Se abs(w(2)) < 10^(-6) Então
-                        w(2) <- 0
-                    Imprime("Coordenada de x no sistema de eixos inicial: %i %i",w(1),w(2))
+                    if v(1) == 0 then
+                        d = z(1)*(y(1)-x(1))
+                    end
+                    if v(2) == 0 then
+                        d = d + z(2)*(y(2)-x(2))
+                    end
+                    if v(3) == 0 then
+                        d = d + z(3)*(y(3)-x(3))
+                    end
+                    d = d/(z(1)^2+z(2)^2+z(3)^2)
+                else
+                    d = (z(1)*(y(1)-x(1))+z(2)*(y(2)-x(2))+z(3)*(y(3)-x(3)))/(z(1)^2+z(2)^2+z(3)^2)
+                end
 
-                Senão Se v = "não_invertido" Então
-
-                    w <- matrizNula(2,1)
-                    w(1) <- (x(1)-y(1))*cos(z)+(x(2)-y(2))*sin(z)
-                    w(2) <- (x(1)-y(1))*sin(z)-(x(2)-y(2))*cos(z)
-                    Se abs(w(1)) < 10^(-6) Então
-                        w(1) <- 0
-                    Se abs(w(2)) < 10^(-6) Então
-                        w(2) <- 0
-                    Imprime("Coordenada de x no sistema de eixos final: %i %i",w(1),w(2))
-
-                Senão
-                    Imprime("Quinto argumento incorreto.")
-                FIM
-            Senão
-                Imprime("Quarto argumento incorreto.")
-            FIM
-        FIM
-    Exceção InvalidIndex
-        Imprime("Insira um par ordenado como primeiro argumento.")
-    FIM
-FIM
-
-/*GEOMETRIA ANALÍTICA*/
-
-/*distânciaPontos*/
-/*ALGORITMO QUE RECEBE AS COORDENADAS DE DOIS PONTOS DO ESPAÇO, E 
-RETORNA A DISTÂNCIA ENTRE ELES.*/
-
-//Entradas: vetores tridimensionais x e y de números reais
-//Saída: um float que é a distância entre os pontos de entrada
-
-INÍCIO
-    Tente ((typeof(x(2)) = "constant" Ou typeof(y(2)) = "constant") E (typeof(x(3)) = "constant" Ou typeof(y(3)) = "constant"))
-        Retorna(((x(1)-y(1))^2 + (x(2)-y(2))^2 + (x(3)-y(3))^2)^(1/2))
-    Exceção "Invalid index"
-        Imprime("Insira ternos ordenados de numeros reais apenas.")
-FIM
-
-/*distânciaPontoReta*/
-/*ALGORITMO QUE RECEBE UM PAR ORDENADO x E DOIS VETORES y E z DE 
-CONSTANTES QUE DEFINEM UMA RETA PARAMETRIZADA (OU SEJA, OS PONTOS DA 
-RETA SÃO DA FORMA (y(1)+z(1)*t,y(2)+z(2)*t,y(3)+z(3)*t), ONDE t É UM 
-PARÂMETRO REAL), E RETORNA A DISTÂNCIA ENTRE O PONTO x E A RETA.*/
-
-//Entradas: vetores tridimensionais x,y e z de números reais
-/*Saída: uma mensagem que diz a distância entre o ponto e a reta, ou 
-uma mensagem de erro*/
-//Variável auxiliar: variável float w
-
-INÍCIO
-    Tente (typeof(x(2)) = CONSTANT Ou typeof(y(2)) = CONSTANT Ou typeof(z(2)) = CONSTANT) E (typeof(x(3)) = CONSTANT Ou typeof(y(3)) = CONSTANT Ou typeof(z(3)) = CONSTANT)
-        Se abs(y(1)-x(1)) < 10^(-6) Ou abs(y(2)-x(2)) < 10^(-6) Ou abs(y(3)-x(3)) < 10^(-6) Então
-        INÍCIO
-
-            v <- zeros(1,3)
-
-            Se abs(y(1)-x(1)) < 10^(-6) Então
-                v(1) <- 1
-            Senão Se abs(y(2)-x(2)) < 10^(-6) Então
-                v(2) <- 1
-            Senão
-                v(3) <- 1
-            Fim
-
-            Se v(1) = 0 Então
-                d <- z(1)*(y(1)-x(1))
-            Se v(2) = 0 Então
-                d <- d + z(2)*(y(2)-x(2))
-            Se v(3) = 0 Então
-                d <- d + z(3)*(y(3)-x(3))
-            d <- d/(z(1)^2+z(2)^2+z(3)^2)
-        Senão
-            d <- (z(1)*(y(1)-x(1))+z(2)*(y(2)-x(2))+z(3)*(y(3)-x(3)))/(z(1)^2+z(2)^2+z(3)^2)
-        FIM
-
-        Se abs(d) < 10^(-6) Então
-        INÍCIO
-            w <- ((x(1)-y(1))^2 + (x(2)-y(2))^2 + (x(3)-y(3))^2)^(1/2)
-            Imprime(w)
-        Senão
-            w <- ((x(1)-y(1)-z(1)*(-d))^2 + (x(2)-y(2)-z(2)*(-d))^2 + (x(3)-y(3)-z(3)*(-d))^2)^(1/2)
-            Imprime(w)
-        FIM
-    Exceção InvalidIndex
-        Imprime("Insira ternos ordenados de numeros reais apenas.")
-    FIM
-FIM
+                if abs(d) < 10^(-6) then
+                    w = ((x(1)-y(1))^2 + (x(2)-y(2))^2 + (x(3)-y(3))^2)^(1/2)
+                    disp(w)
+                else
+                    w = ((x(1)-y(1)-z(1)*(-d))^2 + (x(2)-y(2)-z(2)*(-d))^2 + (x(3)-y(3)-z(3)*(-d))^2)^(1/2)
+                    disp(w)
+                end
+            catch "Invalid index"
+                disp("Insira ternos ordenados de numeros reais apenas.")
+            end
+            
+        endfunction
